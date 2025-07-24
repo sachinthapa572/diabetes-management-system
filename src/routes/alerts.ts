@@ -6,6 +6,7 @@ import {
   getAlertHistory,
   testEmailNotification,
   toggleAlertConfig,
+  triggerWeeklyReport,
 } from "../controller/alerts.controller";
 import { isAuth } from "../middleware/auth";
 import { validateRequest } from "../middleware/validateRequest ";
@@ -34,5 +35,8 @@ alertRouter.patch("/config/toggle", toggleAlertConfig);
 
 // Test email notification
 alertRouter.post("/test-email", testEmailNotification);
+
+// Trigger weekly report (for testing)
+alertRouter.post("/trigger-weekly-report", triggerWeeklyReport);
 
 export default alertRouter;

@@ -196,7 +196,11 @@ export const toggleAlertConfig: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const testEmailNotification: RequestHandler = async (req, res, _next) => {
+export const testEmailNotification: RequestHandler = async (
+  req,
+  res,
+  _next
+) => {
   try {
     const config = await prisma.alertConfig.findUnique({
       where: { user_id: req.user.id },
@@ -215,17 +219,23 @@ export const testEmailNotification: RequestHandler = async (req, res, _next) => 
       return res.status(404).json({ error: "No alert configuration found" });
     }
 
-    if (!config.notification_emails || config.notification_emails.length === 0) {
-      return res.status(400).json({ error: "No notification emails configured" });
+    if (
+      !config.notification_emails ||
+      config.notification_emails.length === 0
+    ) {
+      return res
+        .status(400)
+        .json({ error: "No notification emails configured" });
     }
 
-    const { emailService } = await import('../services/emailService');
+    const { emailService } = await import("../services/emailService");
 
     // Test email connection first
     const connectionTest = await emailService.testConnection();
     if (!connectionTest) {
-      return res.status(500).json({ 
-        error: "Email service connection failed. Please check SMTP configuration." 
+      return res.status(500).json({
+        error:
+          "Email service connection failed. Please check SMTP configuration.",
       });
     }
 
@@ -234,9 +244,9 @@ export const testEmailNotification: RequestHandler = async (req, res, _next) => 
       userEmail: config.user.email,
       userName: `${config.user.first_name} ${config.user.last_name}`,
       glucoseLevel: 200, // Test high glucose value
-      alertType: 'HIGH_GLUCOSE',
+      alertType: "HIGH_GLUCOSE",
       timestamp: new Date(),
-      context: 'OTHER',
+      context: "OTHER",
       thresholds: {
         high: config.high_threshold,
         low: config.low_threshold,
@@ -245,15 +255,40 @@ export const testEmailNotification: RequestHandler = async (req, res, _next) => 
 
     logActivity(req.user.id, "TEST_EMAIL", "alert_config", config.id);
 
-    return res.json({ 
+    return res.json({
       message: "Test email sent successfully",
-      recipients: config.notification_emails.length 
+      recipients: config.notification_emails.length,
     });
   } catch (error) {
-    console.error('Test email failed:', error);
-    return res.status(500).json({ 
+    console.error("Test email failed:", error);
+    return res.status(500).json({
       error: "Failed to send test email",
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+};
+
+export const triggerWeeklyReport: RequestHandler = async (req, res, _next) => {
+  try {
+    // Only allow admins to trigger reports manually
+    if (req.user.role !== "ADMIN") {
+      return res.status(403).json({ error: "Insufficient permissions" });
+    }
+
+    const { cronService } = await import("../services/cronService");
+
+    await cronService.triggerWeeklyReports();
+
+    logActivity(req.user.id, "TRIGGER_WEEKLY_REPORT", "system");
+
+    return res.json({
+      message: "Weekly reports triggered successfully",
+    });
+  } catch (error) {
+    console.error("Failed to trigger weekly reports:", error);
+    return res.status(500).json({
+      error: "Failed to trigger weekly reports",
+      details: error instanceof Error ? error.message : "Unknown error",
     });
   }
 };

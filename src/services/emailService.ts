@@ -35,7 +35,6 @@ class EmailService {
   ): Promise<void> {
     try {
       const {
-        userEmail,
         userName,
         glucoseLevel,
         alertType,
@@ -209,6 +208,30 @@ Context: ${data.context}
 This email was sent automatically by the Blood Sugar Monitor system.
 Please do not reply to this email.
 `;
+  }
+
+  async sendEmail(options: {
+    to: string[];
+    subject: string;
+    html: string;
+    text: string;
+  }): Promise<void> {
+    try {
+      await this.transporter.sendMail({
+        from: `"Blood Sugar Monitor" <${process.env.SMTP_USER}>`,
+        to: options.to.join(", "),
+        subject: options.subject,
+        text: options.text,
+        html: options.html,
+      });
+
+      console.log(
+        `Email sent to ${options.to.length} recipients: ${options.subject}`
+      );
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      throw error;
+    }
   }
 
   async testConnection(): Promise<boolean> {
