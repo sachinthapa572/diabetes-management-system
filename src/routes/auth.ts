@@ -24,7 +24,7 @@ userAuthRouter.post(
 );
 
 // Login endpoint
-userAuthRouter.post("/login", AuthLoginSchema, loginUser);
+userAuthRouter.post("/login", AuthLoginSchema, validateRequest, loginUser);
 
 // Get current user profile
 userAuthRouter.get("/profile", isAuth, getUserProfile);

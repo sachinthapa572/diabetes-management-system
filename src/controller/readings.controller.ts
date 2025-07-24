@@ -7,7 +7,6 @@ import type {
 } from "@/validation/readingsValidation";
 import { Prisma } from "@prisma/client";
 import type { RequestHandler } from "express";
-import { validationResult } from "express-validator";
 import prisma from "../../prisma/db";
 
 export const createReading: RequestHandler<{}, {}, CreateReadingInput> = async (
@@ -16,11 +15,6 @@ export const createReading: RequestHandler<{}, {}, CreateReadingInput> = async (
   next
 ) => {
   try {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
 
     const {
       glucose_level,
@@ -65,10 +59,6 @@ export const getReadings: RequestHandler<{}, {}, {}, GetReadingsQuery> = async (
   next
 ) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
 
     const {
       startDate,
@@ -256,6 +246,53 @@ export const getReadingTrends: RequestHandler<
       trends: trendData,
       groupBy,
       days: Number(days),
+    });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+};
+
+export const deleteReading: RequestHandler<{ readingId: string }> = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const { readingId } = req.params;
+    const userId = req.user!.id;
+
+    // Check if the reading exists and belongs to the user
+    const reading = await prisma.reading.findFirst({
+      where: {
+        id: readingId,
+        user_id: userId,
+      },
+    });
+
+    if (!reading) {
+      return res.status(404).json({
+        success: false,
+        message: "Reading not found or you don't have permission to delete it",
+      });
+    }
+
+    // Delete related alert history first (if any)
+    await prisma.alertHistory.deleteMany({
+      where: { reading_id: readingId },
+    });
+
+    // Delete the reading
+    await prisma.reading.delete({
+      where: { id: readingId },
+    });
+
+    // Log the deletion activity
+    logActivity(userId, "DELETE", "reading", readingId);
+
+    return res.json({
+      success: true,
+      message: "Reading deleted successfully",
     });
   } catch (error) {
     console.log(error);

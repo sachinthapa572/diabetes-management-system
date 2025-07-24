@@ -5,7 +5,6 @@ import type {
 } from "@/validation/usersValidation";
 import { Role } from "@prisma/client";
 import type { RequestHandler } from "express";
-import { validationResult } from "express-validator";
 import prisma from "../../prisma/db";
 
 export const getPatients: RequestHandler<{}, {}, {}, GetPatientsQuery> = async (
@@ -14,10 +13,6 @@ export const getPatients: RequestHandler<{}, {}, {}, GetPatientsQuery> = async (
   next
 ) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
     const { limit = 50, offset = 0, search } = req.query;
     const providerId = req.user.id;
 
@@ -204,9 +199,6 @@ export const getPatientReadings: RequestHandler<
   GetPatientReadingsQuery
 > = async (req, res, next) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty())
-      return res.status(400).json({ errors: errors.array() });
 
     const { patientId } = req.params;
     const { startDate, endDate, limit = 50 } = req.query;

@@ -43,7 +43,7 @@ export function requireRole(role: string): RequestHandler {
       return res.status(401).json({ error: "Authentication required" });
     }
 
-    if (req.user.role !== role && req.user.role !== "admin") {
+    if (req.user.role !== role.toUpperCase() && req.user.role !== "ADMIN") {
       return res.status(403).json({ error: "Insufficient permissions" });
     }
 

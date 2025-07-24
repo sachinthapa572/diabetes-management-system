@@ -4,7 +4,6 @@ import type {
   AlertHistoryQueryInput,
 } from "@/validation/alertsValidation";
 import type { RequestHandler } from "express";
-import { validationResult } from "express-validator";
 import prisma from "../../prisma/db";
 
 export const createOrUpdateAlertConfig: RequestHandler<
@@ -14,10 +13,6 @@ export const createOrUpdateAlertConfig: RequestHandler<
   {}
 > = async (req, res, next) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
 
     const { high_threshold, low_threshold, notification_methods } = req.body;
 
@@ -94,9 +89,6 @@ export const getAlertHistory: RequestHandler<
   AlertHistoryQueryInput
 > = async (req, res, next) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty())
-      return res.status(400).json({ errors: errors.array() });
 
     const { limit = 50, offset = 0, alert_type, acknowledged } = req.query;
 

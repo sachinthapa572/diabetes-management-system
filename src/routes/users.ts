@@ -5,6 +5,7 @@ import {
   getPatients,
 } from "../controller/users.controller";
 import { isAuth, requireRole } from "../middleware/auth";
+import { validateRequest } from "../middleware/validateRequest ";
 import {
   GetPatientReadingsQuerySchema,
   GetPatientsQuerySchema,
@@ -16,9 +17,9 @@ userRouter.use(isAuth);
 // Get patients for a healthcare provider
 userRouter.get(
   "/patients",
-
   requireRole("provider"),
   GetPatientsQuerySchema,
+  validateRequest,
   getPatients
 );
 
@@ -34,6 +35,7 @@ userRouter.get(
   "/patients/:patientId/readings",
   requireRole("provider"),
   GetPatientReadingsQuerySchema,
+  validateRequest,
   getPatientReadings
 );
 

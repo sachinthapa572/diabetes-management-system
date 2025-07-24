@@ -16,14 +16,14 @@ export const AuthRegisterSchema = [
     .withMessage("Last name is required"),
   body("role")
     .optional()
-    .isIn(["patient", "provider"])
-    .withMessage("Role must be either 'patient' or 'provider'"),
+    .isIn(["PATIENT", "PROVIDER"])
+    .withMessage("Role must be either 'PATIENT' or 'PROVIDER'"),
   body("dateOfBirth")
     .isISO8601()
     .toDate()
     .withMessage("Date of birth must be a valid ISO date (e.g. 1990-01-01)"),
   body("phone")
-    .optional()
+    .optional({ values: "falsy" })
     .isMobilePhone("any")
     .withMessage("Phone number must be valid"),
 ];

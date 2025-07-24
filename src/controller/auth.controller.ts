@@ -33,7 +33,13 @@ export const registerUser: RequestHandler<
     });
 
     if (existingUser) {
-      return res.status(409).json({ error: "User already exists" });
+      return res.status(409).json({
+        success: false,
+        message: "Validation failed",
+        errors: [
+          { field: "email", message: "Email already exists , try to login" },
+        ],
+      });
     }
 
     // Hash password
@@ -80,11 +86,6 @@ export const loginUser: RequestHandler<{}, {}, AuthLoginInput, {}> = async (
   next
 ) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     const { email, password } = req.body;
 
     // Find user
