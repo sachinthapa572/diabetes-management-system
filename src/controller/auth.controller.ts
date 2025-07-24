@@ -1,3 +1,4 @@
+import prisma from "@/config/db";
 import { generateToken, logActivity } from "@/middleware/auth";
 import type {
   AuthLoginInput,
@@ -7,7 +8,6 @@ import type {
 import { Role } from "@prisma/client";
 import type { RequestHandler } from "express";
 import { validationResult } from "express-validator";
-import prisma from "../../prisma/db";
 
 export const registerUser: RequestHandler<
   {},

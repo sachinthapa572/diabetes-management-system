@@ -1,10 +1,10 @@
+import prisma from "@/config/db";
 import { logActivity } from "@/middleware/auth";
 import type {
   AlertConfigInput,
   AlertHistoryQueryInput,
 } from "@/validation/alertsValidation";
 import type { RequestHandler } from "express";
-import prisma from "../../prisma/db";
 
 export const createOrUpdateAlertConfig: RequestHandler<
   {},

@@ -1,3 +1,4 @@
+import prisma from "@/config/db";
 import { logActivity } from "@/middleware/auth";
 import type {
   GetPatientReadingsQuery,
@@ -5,7 +6,6 @@ import type {
 } from "@/validation/usersValidation";
 import { Role } from "@prisma/client";
 import type { RequestHandler } from "express";
-import prisma from "../../prisma/db";
 
 export const getPatients: RequestHandler<{}, {}, {}, GetPatientsQuery> = async (
   req,
@@ -199,7 +199,6 @@ export const getPatientReadings: RequestHandler<
   GetPatientReadingsQuery
 > = async (req, res, next) => {
   try {
-
     const { patientId } = req.params;
     const { startDate, endDate, limit = 50 } = req.query;
     const providerId = req.user.id;

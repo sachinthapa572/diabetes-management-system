@@ -1,3 +1,4 @@
+import prisma from "@/config/db";
 import { logActivity } from "@/middleware/auth";
 import type {
   CreateReadingInput,
@@ -7,7 +8,6 @@ import type {
 } from "@/validation/readingsValidation";
 import { Prisma } from "@prisma/client";
 import type { RequestHandler } from "express";
-import prisma from "../../prisma/db";
 
 export const createReading: RequestHandler<{}, {}, CreateReadingInput> = async (
   req,
@@ -15,7 +15,6 @@ export const createReading: RequestHandler<{}, {}, CreateReadingInput> = async (
   next
 ) => {
   try {
-
     const {
       glucose_level,
       timestamp,
@@ -59,7 +58,6 @@ export const getReadings: RequestHandler<{}, {}, {}, GetReadingsQuery> = async (
   next
 ) => {
   try {
-
     const {
       startDate,
       endDate,
@@ -358,17 +356,20 @@ async function checkGlucoseAlerts(
     });
 
     // Send email notification if notification emails are configured
-    if (alertConfig.notification_emails && alertConfig.notification_emails.length > 0) {
+    if (
+      alertConfig.notification_emails &&
+      alertConfig.notification_emails.length > 0
+    ) {
       try {
-        const { emailService } = await import('../services/emailService');
-        
+        const { emailService } = await import("../services/emailService");
+
         await emailService.sendAlertEmail(alertConfig.notification_emails, {
           userEmail: alertConfig.user.email,
           userName: `${alertConfig.user.first_name} ${alertConfig.user.last_name}`,
           glucoseLevel,
           alertType,
           timestamp: reading?.timestamp || new Date(),
-          context: reading?.context || 'OTHER',
+          context: reading?.context || "OTHER",
           thresholds: {
             high: alertConfig.high_threshold,
             low: alertConfig.low_threshold,
@@ -381,12 +382,13 @@ async function checkGlucoseAlerts(
           recipients: alertConfig.notification_emails.length,
         });
       } catch (emailError) {
-        console.error('Failed to send alert email:', emailError);
+        console.error("Failed to send alert email:", emailError);
         // Log the email failure but don't throw - alert should still be recorded
         logActivity(userId, "EMAIL_FAILED", "alert", readingId, {
           type: alertType,
           glucose_level: glucoseLevel,
-          error: emailError instanceof Error ? emailError.message : 'Unknown error',
+          error:
+            emailError instanceof Error ? emailError.message : "Unknown error",
         });
       }
     }

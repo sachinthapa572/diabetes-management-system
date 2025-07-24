@@ -1,7 +1,7 @@
+import prisma from "@/config/db";
 import appEnv from "@/validation/env";
 import type { NextFunction, Request, RequestHandler, Response } from "express";
 import jwt from "jsonwebtoken";
-import prisma from "../../prisma/db";
 
 export const isAuth: RequestHandler = async (req, res, next) => {
   const authHeader = req.headers["authorization"];

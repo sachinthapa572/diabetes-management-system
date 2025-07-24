@@ -1,5 +1,5 @@
+import prisma from "@/config/db";
 import { endOfWeek, format, startOfWeek, subDays } from "date-fns";
-import prisma from "../../prisma/db";
 import { emailService } from "./emailService";
 
 interface WeeklyReportData {
