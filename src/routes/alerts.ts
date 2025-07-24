@@ -4,6 +4,7 @@ import {
   createOrUpdateAlertConfig,
   getAlertConfig,
   getAlertHistory,
+  testEmailNotification,
   toggleAlertConfig,
 } from "../controller/alerts.controller";
 import { isAuth } from "../middleware/auth";
@@ -30,5 +31,8 @@ alertRouter.patch("/:alertId/acknowledge", acknowledgeAlert);
 
 // Toggle alert configuration enabled/disabled
 alertRouter.patch("/config/toggle", toggleAlertConfig);
+
+// Test email notification
+alertRouter.post("/test-email", testEmailNotification);
 
 export default alertRouter;

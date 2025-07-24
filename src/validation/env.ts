@@ -7,6 +7,10 @@ type Env = {
   JWT_EXPIRES_IN: string;
   REFRESH_TOKEN_SECRET: string;
   REFRESH_TOKEN_EXPIRES_IN: string;
+  SMTP_HOST?: string;
+  SMTP_PORT?: string;
+  SMTP_USER?: string;
+  SMTP_PASS?: string;
 };
 
 const appEnv: Env = {
@@ -17,6 +21,10 @@ const appEnv: Env = {
   JWT_EXPIRES_IN: Bun.env.JWT_EXPIRES_IN!,
   REFRESH_TOKEN_SECRET: Bun.env.REFRESH_TOKEN_SECRET!,
   REFRESH_TOKEN_EXPIRES_IN: Bun.env.REFRESH_TOKEN_EXPIRES_IN!,
+  SMTP_HOST: Bun.env.SMTP_HOST,
+  SMTP_PORT: Bun.env.SMTP_PORT,
+  SMTP_USER: Bun.env.SMTP_USER,
+  SMTP_PASS: Bun.env.SMTP_PASS,
 };
 
 // Check if all required env variables are defined

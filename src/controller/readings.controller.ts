@@ -317,6 +317,15 @@ async function checkGlucoseAlerts(
 ) {
   const alertConfig = await prisma.alertConfig.findFirst({
     where: { user_id: userId, enabled: true },
+    include: {
+      user: {
+        select: {
+          email: true,
+          first_name: true,
+          last_name: true,
+        },
+      },
+    },
   });
   if (!alertConfig) return;
 
@@ -332,6 +341,13 @@ async function checkGlucoseAlerts(
   }
 
   if (alertType) {
+    // Get the reading details for email context
+    const reading = await prisma.reading.findUnique({
+      where: { id: readingId },
+      select: { context: true, timestamp: true },
+    });
+
+    // Create alert history record
     await prisma.alertHistory.create({
       data: {
         user_id: userId,
@@ -340,6 +356,40 @@ async function checkGlucoseAlerts(
         message,
       },
     });
+
+    // Send email notification if notification emails are configured
+    if (alertConfig.notification_emails && alertConfig.notification_emails.length > 0) {
+      try {
+        const { emailService } = await import('../services/emailService');
+        
+        await emailService.sendAlertEmail(alertConfig.notification_emails, {
+          userEmail: alertConfig.user.email,
+          userName: `${alertConfig.user.first_name} ${alertConfig.user.last_name}`,
+          glucoseLevel,
+          alertType,
+          timestamp: reading?.timestamp || new Date(),
+          context: reading?.context || 'OTHER',
+          thresholds: {
+            high: alertConfig.high_threshold,
+            low: alertConfig.low_threshold,
+          },
+        });
+
+        logActivity(userId, "EMAIL_SENT", "alert", readingId, {
+          type: alertType,
+          glucose_level: glucoseLevel,
+          recipients: alertConfig.notification_emails.length,
+        });
+      } catch (emailError) {
+        console.error('Failed to send alert email:', emailError);
+        // Log the email failure but don't throw - alert should still be recorded
+        logActivity(userId, "EMAIL_FAILED", "alert", readingId, {
+          type: alertType,
+          glucose_level: glucoseLevel,
+          error: emailError instanceof Error ? emailError.message : 'Unknown error',
+        });
+      }
+    }
 
     logActivity(userId, "ALERT", "glucose", readingId, {
       type: alertType,
