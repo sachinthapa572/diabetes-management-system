@@ -1,0 +1,149 @@
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum Role {
+    PATIENT
+    PROVIDER
+    ADMIN
+}
+
+enum ReadingContext {
+    PRE_MEAL
+    POST_MEAL
+    FASTING
+    EXERCISE
+    OTHER
+}
+
+enum AlertType {
+    HIGH_GLUCOSE
+    LOW_GLUCOSE
+}
+
+enum RelationshipType {
+    PRIMARY
+    SECONDARY
+    CONSULTING
+}
+
+model User {
+    id                      String            @id @default(uuid())
+    email                   String            @unique
+    password_hash           String
+    role                    Role              @default(PATIENT)
+    first_name              String
+    last_name               String
+    date_of_birth           DateTime?
+    phone                   String?
+    medical_record_number   String?           @unique
+    emergency_contact_name  String?
+    emergency_contact_phone String?
+    two_factor_enabled      Boolean           @default(false)
+    two_factor_secret       String?
+    last_login_at           DateTime?
+    created_at              DateTime          @default(now())
+    updated_at              DateTime          @updatedAt
+    readings                Reading[]
+    alertConfigs            AlertConfig[]
+    alertHistory            AlertHistory[]
+    auditLogs               AuditLog[]
+    medications             Medication[]
+    patientOf               PatientProvider[] @relation("PatientLinks")
+    providerFor             PatientProvider[] @relation("ProviderLinks")
+}
+
+model Reading {
+    id                String         @id @default(uuid())
+    user              User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id           String
+    glucose_level     Float
+    timestamp         DateTime
+    context           ReadingContext
+    notes             String?
+    medication_taken  Boolean        @default(false)
+    carbs_consumed    Int            @default(0)
+    exercise_duration Int            @default(0)
+    stress_level      Int?
+    created_at        DateTime       @default(now())
+    updated_at        DateTime       @updatedAt
+    alertHistory      AlertHistory[]
+
+    @@index([user_id, timestamp])
+}
+
+model AlertConfig {
+    id                   String   @id @default(uuid())
+    user                 User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id              String   @unique
+    high_threshold       Float
+    low_threshold        Float
+    notification_methods Json
+    enabled              Boolean  @default(true)
+    created_at           DateTime @default(now())
+    updated_at           DateTime @updatedAt
+}
+
+model AlertHistory {
+    id              String    @id @default(uuid())
+    user            User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id         String
+    reading         Reading   @relation(fields: [reading_id], references: [id], onDelete: Cascade)
+    reading_id      String
+    alert_type      AlertType
+    message         String
+    acknowledged    Boolean   @default(false)
+    acknowledged_at DateTime?
+    created_at      DateTime  @default(now())
+
+    @@index([user_id, created_at])
+}
+
+model AuditLog {
+    id          String   @id @default(uuid())
+    user        User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+    user_id     String?
+    action      String
+    resource    String
+    resource_id String?
+    ip_address  String?
+    user_agent  String?
+    timestamp   DateTime @default(now())
+    details     Json?
+
+    @@index([user_id, timestamp])
+}
+
+model PatientProvider {
+    id                String           @id @default(uuid())
+    patient           User             @relation("PatientLinks", fields: [patient_id], references: [id], onDelete: Cascade)
+    patient_id        String
+    provider          User             @relation("ProviderLinks", fields: [provider_id], references: [id], onDelete: Cascade)
+    provider_id       String
+    relationship_type RelationshipType @default(PRIMARY)
+    active            Boolean          @default(true)
+    created_at        DateTime         @default(now())
+
+    @@unique([patient_id, provider_id])
+}
+
+model Medication {
+    id           String   @id @default(uuid())
+    user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id      String
+    name         String
+    dosage       String
+    frequency    String
+    instructions String?
+    active       Boolean  @default(true)
+    created_at   DateTime @default(now())
+    updated_at   DateTime @updatedAt
+
+    @@index([user_id])
+}
