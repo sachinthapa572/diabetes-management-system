@@ -79,15 +79,15 @@ model Reading {
 }
 
 model AlertConfig {
-    id                   String   @id @default(uuid())
-    user                 User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    user_id              String   @unique
-    high_threshold       Float
-    low_threshold        Float
-    notification_methods Json
-    enabled              Boolean  @default(true)
-    created_at           DateTime @default(now())
-    updated_at           DateTime @updatedAt
+    id                  String   @id @default(uuid())
+    user                User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id             String   @unique
+    high_threshold      Float
+    low_threshold       Float
+    notification_emails String[]
+    enabled             Boolean  @default(true)
+    created_at          DateTime @default(now())
+    updated_at          DateTime @updatedAt
 }
 
 model AlertHistory {
