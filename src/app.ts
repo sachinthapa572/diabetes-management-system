@@ -2,9 +2,9 @@ import cors from "cors";
 import express from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import { errorHandler, notFoundErr } from "./middleware/errorHandler";
-import { requestLogger } from "./middleware/requestLogger";
-import router from "./routes/routes";
+import { errorHandler, notFoundErr } from "./middleware/errorHandler.ts";
+import { requestLogger } from "./middleware/requestLogger.ts";
+import router from "./routes/routes.ts";
 
 const app = express();
 
