@@ -1,6 +1,6 @@
-import app from "./app.js";
-import { cronService } from "./services/cronService.js";
-import appEnv from "./validation/env.js";
+import app from "./app.ts";
+import { cronService } from "./services/cronService.ts";
+import appEnv from "./validation/env.ts";
 
 // Initialize database and start server
 async function startServer() {
