@@ -3,13 +3,13 @@ import {
   getPatientDetails,
   getPatientReadings,
   getPatients,
-} from "../controller/users.controller";
-import { isAuth, requireRole } from "../middleware/auth";
-import { validateRequest } from "../middleware/validateRequest ";
+} from "../controller/users.controller.ts";
+import { isAuth, requireRole } from "../middleware/auth.ts";
+import { validateRequest } from "../middleware/validateRequest .ts";
 import {
   GetPatientReadingsQuerySchema,
   GetPatientsQuerySchema,
-} from "../validation/usersValidation";
+} from "../validation/usersValidation.ts";
 
 const userRouter = Router();
 userRouter.use(isAuth);

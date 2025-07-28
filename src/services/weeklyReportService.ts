@@ -1,6 +1,6 @@
-import prisma from "@/config/db";
+import prisma from "@/config/db.ts";
 import { endOfWeek, format, startOfWeek, subDays } from "date-fns";
-import { emailService } from "./emailService";
+import { emailService } from "./emailService.ts";
 
 interface WeeklyReportData {
   user: {

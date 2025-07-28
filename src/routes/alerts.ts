@@ -7,25 +7,35 @@ import {
   testEmailNotification,
   toggleAlertConfig,
   triggerWeeklyReport,
-} from "../controller/alerts.controller";
-import { isAuth } from "../middleware/auth";
-import { validateRequest } from "../middleware/validateRequest ";
+} from "../controller/alerts.controller.ts";
+import { isAuth } from "../middleware/auth.ts";
+import { validateRequest } from "../middleware/validateRequest .ts";
 import {
   AlertConfigSchema,
   AlertHistoryQuerySchema,
-} from "../validation/alertsValidation";
+} from "../validation/alertsValidation.ts";
 
 const alertRouter = Router();
 alertRouter.use(isAuth);
 
 // Create or update alert configuration
-alertRouter.post("/", AlertConfigSchema, validateRequest, createOrUpdateAlertConfig);
+alertRouter.post(
+  "/",
+  AlertConfigSchema,
+  validateRequest,
+  createOrUpdateAlertConfig
+);
 
 // Get alert configuration
 alertRouter.get("/config", getAlertConfig);
 
 // Get alert history
-alertRouter.get("/history", AlertHistoryQuerySchema, validateRequest, getAlertHistory);
+alertRouter.get(
+  "/history",
+  AlertHistoryQuerySchema,
+  validateRequest,
+  getAlertHistory
+);
 
 // Acknowledge an alert
 alertRouter.patch("/:alertId/acknowledge", acknowledgeAlert);

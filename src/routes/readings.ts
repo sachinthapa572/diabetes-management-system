@@ -5,15 +5,15 @@ import {
   getReadings,
   getReadingStats,
   getReadingTrends,
-} from "../controller/readings.controller";
-import { isAuth } from "../middleware/auth";
-import { validateRequest } from "../middleware/validateRequest ";
+} from "../controller/readings.controller.ts";
+import { isAuth } from "../middleware/auth.ts";
+import { validateRequest } from "../middleware/validateRequest .ts";
 import {
   CreateReadingSchema,
   GetReadingsQuerySchema,
   GetStatsQuerySchema,
   GetTrendsQuerySchema,
-} from "../validation/readingsValidation";
+} from "../validation/readingsValidation.ts";
 
 const readingsRouter = Router();
 
@@ -21,8 +21,18 @@ readingsRouter.use(isAuth);
 
 readingsRouter.post("/", CreateReadingSchema, validateRequest, createReading);
 readingsRouter.get("/", GetReadingsQuerySchema, validateRequest, getReadings);
-readingsRouter.get("/stats", GetStatsQuerySchema, validateRequest, getReadingStats);
-readingsRouter.get("/trends", GetTrendsQuerySchema, validateRequest, getReadingTrends);
+readingsRouter.get(
+  "/stats",
+  GetStatsQuerySchema,
+  validateRequest,
+  getReadingStats
+);
+readingsRouter.get(
+  "/trends",
+  GetTrendsQuerySchema,
+  validateRequest,
+  getReadingTrends
+);
 readingsRouter.delete("/:readingId", deleteReading);
 
 export default readingsRouter;

@@ -1,5 +1,5 @@
-import prisma from "@/config/db";
-import appEnv from "@/validation/env";
+import prisma from "@/config/db.ts";
+import appEnv from "@/validation/env.ts";
 import type { NextFunction, Request, RequestHandler, Response } from "express";
 import jwt from "jsonwebtoken";
 

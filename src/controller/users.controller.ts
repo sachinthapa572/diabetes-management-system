@@ -1,9 +1,9 @@
-import prisma from "@/config/db";
-import { logActivity } from "@/middleware/auth";
+import prisma from "@/config/db.ts";
+import { logActivity } from "@/middleware/auth.ts";
 import type {
   GetPatientReadingsQuery,
   GetPatientsQuery,
-} from "@/validation/usersValidation";
+} from "@/validation/usersValidation.ts";
 import { Role } from "@prisma/client";
 import type { RequestHandler } from "express";
 

@@ -1,11 +1,11 @@
-import prisma from "@/config/db";
-import { logActivity } from "@/middleware/auth";
+import prisma from "@/config/db.ts";
+import { logActivity } from "@/middleware/auth.ts";
 import type {
   CreateReadingInput,
   GetReadingsQuery,
   GetStatsQuery,
   GetTrendsQuery,
-} from "@/validation/readingsValidation";
+} from "@/validation/readingsValidation.ts";
 import { Prisma } from "@prisma/client";
 import type { RequestHandler } from "express";
 
@@ -361,7 +361,7 @@ async function checkGlucoseAlerts(
       alertConfig.notification_emails.length > 0
     ) {
       try {
-        const { emailService } = await import("../services/emailService");
+        const { emailService } = await import("../services/emailService.ts");
 
         await emailService.sendAlertEmail(alertConfig.notification_emails, {
           userEmail: alertConfig.user.email,

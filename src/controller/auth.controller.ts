@@ -1,10 +1,10 @@
-import prisma from "@/config/db";
-import { generateToken, logActivity } from "@/middleware/auth";
+import prisma from "@/config/db.ts";
+import { generateToken, logActivity } from "@/middleware/auth.ts";
 import type {
   AuthLoginInput,
   AuthRegisterInput,
   AuthUpdateProfileInput,
-} from "@/validation/authValidation";
+} from "@/validation/authValidation.ts";
 import { Role } from "@prisma/client";
 import type { RequestHandler } from "express";
 import { validationResult } from "express-validator";

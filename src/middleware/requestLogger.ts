@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { logger } from "./errorHandler";
+import { logger } from "./errorHandler.ts";
 
 export const requestLogger = (
   req: Request,

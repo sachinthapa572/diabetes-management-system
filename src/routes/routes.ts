@@ -1,8 +1,8 @@
 import { Router } from "express";
-import alertRouter from "./alerts";
-import userAuthRouter from "./auth";
-import readingsRouter from "./readings";
-import userRouter from "./users";
+import alertRouter from "./alerts.ts";
+import userAuthRouter from "./auth.ts";
+import readingsRouter from "./readings.ts";
+import userRouter from "./users.ts";
 
 const router = Router();
 

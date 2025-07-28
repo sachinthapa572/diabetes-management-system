@@ -1,17 +1,17 @@
-import { validateRequest } from "@/middleware/validateRequest ";
+import { validateRequest } from "@/middleware/validateRequest .ts";
 import { Router } from "express";
 import {
   getUserProfile,
   loginUser,
   registerUser,
   updateUserProfile,
-} from "../controller/auth.controller";
-import { isAuth } from "../middleware/auth";
+} from "../controller/auth.controller.ts";
+import { isAuth } from "../middleware/auth.ts";
 import {
   AuthLoginSchema,
   AuthRegisterSchema,
   AuthUpdateProfileSchema,
-} from "../validation/authValidation";
+} from "../validation/authValidation.ts";
 
 const userAuthRouter = Router();
 

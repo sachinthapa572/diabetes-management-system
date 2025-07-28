@@ -1,9 +1,9 @@
-import prisma from "@/config/db";
-import { logActivity } from "@/middleware/auth";
+import prisma from "@/config/db.ts";
+import { logActivity } from "@/middleware/auth.ts";
 import type {
   AlertConfigInput,
   AlertHistoryQueryInput,
-} from "@/validation/alertsValidation";
+} from "@/validation/alertsValidation.ts";
 import type { RequestHandler } from "express";
 
 export const createOrUpdateAlertConfig: RequestHandler<
@@ -228,7 +228,7 @@ export const testEmailNotification: RequestHandler = async (
         .json({ error: "No notification emails configured" });
     }
 
-    const { emailService } = await import("../services/emailService");
+    const { emailService } = await import("../services/emailService.ts");
 
     // Test email connection first
     const connectionTest = await emailService.testConnection();
@@ -275,7 +275,7 @@ export const triggerWeeklyReport: RequestHandler = async (req, res, _next) => {
       return res.status(403).json({ error: "Insufficient permissions" });
     }
 
-    const { cronService } = await import("../services/cronService");
+    const { cronService } = await import("../services/cronService.ts");
 
     await cronService.triggerWeeklyReports();
 

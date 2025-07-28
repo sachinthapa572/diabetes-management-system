@@ -1,6 +1,6 @@
 import type { ScheduledTask } from "node-cron";
 import cron from "node-cron";
-import { weeklyReportService } from "./weeklyReportService";
+import { weeklyReportService } from "./weeklyReportService.ts";
 
 class CronService {
   private jobs: Map<string, ScheduledTask> = new Map();

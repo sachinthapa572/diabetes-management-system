@@ -1,4 +1,4 @@
-import appEnv from "@/validation/env";
+import appEnv from "@/validation/env.ts";
 import nodemailer, { createTransport } from "nodemailer";
 
 interface AlertEmailData {
